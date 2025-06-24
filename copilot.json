@@ -1,0 +1,15 @@
+{
+  "instructions": [
+    "This project notifies the user via Discord when the game 'Limbus Company' reaches a new all-time high for online player count.",
+    "Use the Steam Web API endpoints GetNumberOfCurrentPlayers and GetSchemaForGame to fetch player data.",
+    "Persist the previous all-time high player count in a local file (e.g., JSON or text).",
+    "On each run, compare the current player count to the stored all-time high. If the current count is higher, update the file and send a Discord notification.",
+    "Send notifications to Discord using a webhook.",
+    "Write clean, modular JavaScript code. Use async/await for API calls.",
+    "Include error handling for API requests and file operations.",
+    "Document functions with concise comments.",
+    "The project is implemented in the 'src' directory, with separate modules for API access, notification, and configuration.",
+    "Use environment variables or a config file for sensitive data such as API keys and Discord webhook URLs.",
+    "The main entry point is 'src/index.js'."
+  ]
+}
