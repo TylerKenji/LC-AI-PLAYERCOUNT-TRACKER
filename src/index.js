@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import http from 'http';
 import AIAgent from './aiAgent.js';
 import notifier from './notifier.js';
 import config from './config/index.js';
@@ -26,3 +27,13 @@ const aiAgent = new AIAgent(config.steamApiKey, notifier, trace);
 
 trace('AIAgent initialized. Starting monitoring...');
 aiAgent.startMonitoring(config.checkInterval);
+
+// Minimal HTTP server for Azure health checks
+const server = http.createServer((req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end('OK');
+});
+
+server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
