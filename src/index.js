@@ -3,7 +3,7 @@ import http from 'http';
 import AIAgent from './aiAgent.js';
 import notifier from './notifier.js';
 import config from './config/index.js';
-import { loadAllTimeHigh } from './steamApi.js';
+import { loadAllTimeHigh, getAllTimeHigh } from './steamApi.js';
 import { createWebInterfaceServer } from './webInterface.js';
 
 dotenv.config();
