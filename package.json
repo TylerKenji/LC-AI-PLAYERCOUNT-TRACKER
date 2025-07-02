@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "An AI agent that notifies when the online player count for Limbus Company reaches an all-time new high.",
   "main": "src/index.js",
+  "type": "module",
   "scripts": {
     "start": "node src/index.js"
   },
