@@ -4,6 +4,7 @@ import AIAgent from './aiAgent.js';
 import notifier from './notifier.js';
 import config from './config/index.js';
 import { loadAllTimeHigh } from './steamApi.js';
+import { createWebInterfaceServer } from './webInterface.js';
 
 dotenv.config();
 
@@ -28,10 +29,25 @@ const aiAgent = new AIAgent(config.steamApiKey, notifier, trace);
 trace('AIAgent initialized. Starting monitoring...');
 aiAgent.startMonitoring(config.checkInterval);
 
-// Minimal HTTP server for Azure health checks
+// Minimal HTTP server for Azure health checks and web interface
 const server = http.createServer((req, res) => {
-    res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end('OK');
+    if (req.url === '/' && req.method === 'GET') {
+        // Serve the all-time high web interface
+        const high = getAllTimeHigh();
+        res.writeHead(200, { 'Content-Type': 'text/html' });
+        res.end(`
+            <html>
+            <head><title>Limbus Company All-Time High</title></head>
+            <body style="font-family:sans-serif;text-align:center;margin-top:10%">
+                <h1>Limbus Company All-Time High Player Count</h1>
+                <p style="font-size:2em;">${high}</p>
+            </body>
+            </html>
+        `);
+    } else {
+        res.writeHead(404, { 'Content-Type': 'text/plain' });
+        res.end('Not Found');
+    }
 });
 
 server.listen(PORT, () => {
