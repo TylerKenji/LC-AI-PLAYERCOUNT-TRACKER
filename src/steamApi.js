@@ -16,6 +16,7 @@ const HIGH_FILE = path.resolve('./allTimeHigh.json');
 
 // In-memory variable to track the all-time high player count during runtime
 let allTimeHigh = 0;
+let highHistory = [];
 
 // Load all-time high from file at startup
 export async function loadAllTimeHigh() {
@@ -23,14 +24,16 @@ export async function loadAllTimeHigh() {
         const data = await fs.readFile(HIGH_FILE, 'utf-8');
         const parsed = JSON.parse(data);
         allTimeHigh = typeof parsed.allTimeHigh === 'number' ? parsed.allTimeHigh : 0;
+        highHistory = Array.isArray(parsed.highHistory) ? parsed.highHistory : [];
     } catch (err) {
         allTimeHigh = 0;
+        highHistory = [];
     }
 }
 
 // Save all-time high to file
 async function saveAllTimeHigh() {
-    await fs.writeFile(HIGH_FILE, JSON.stringify({ allTimeHigh }), 'utf-8');
+    await fs.writeFile(HIGH_FILE, JSON.stringify({ allTimeHigh, highHistory }), 'utf-8');
 }
 
 /**
@@ -63,6 +66,8 @@ export const fetchCurrentPlayerCount = async (steamApiKey) => {
 export const checkNewAllTimeHigh = async (currentCount) => {
     if (currentCount > allTimeHigh) {
         allTimeHigh = currentCount;
+        highHistory.unshift({ value: currentCount, timestamp: new Date().toISOString() });
+        highHistory = highHistory.slice(0, 5);
         await saveAllTimeHigh();
         return true;
     }
@@ -75,4 +80,12 @@ export const checkNewAllTimeHigh = async (currentCount) => {
  */
 export function getAllTimeHigh() {
     return allTimeHigh;
+}
+
+/**
+ * Gets the history of the last 5 all-time highs.
+ * @returns {Array} The array of the last 5 all-time highs with timestamps.
+ */
+export function getHighHistory() {
+    return highHistory;
 }
