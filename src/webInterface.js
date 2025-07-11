@@ -12,7 +12,7 @@ export function createWebInterfaceServer(port = 3000) {
                 <head><title>Limbus Company All-Time High</title></head>
                 <body style="font-family:sans-serif;text-align:center;margin-top:5%;min-height:100vh;background-image:url('https://i.ytimg.com/vi/1gsNj8hwEPw/maxresdefault.jpg');background-size:cover;background-position:center;background-repeat:no-repeat;">
                     <div style="margin-bottom:2em;">
-                        <audio id="bg-music" src="https://www.dropbox.com/scl/fi/ybzuiyo6hruaamkzngdvb/Limbus-Company-In-Hell-We-Live-Lament-Instrumental.mp3?rlkey=mt97okdz4h7ps90im9dz2ix2g&e=1&st=dywj5gnb&dl=1" controls loop>
+                        <audio id="bg-music" src="https://files.catbox.moe/mvrjq8.mp3" controls loop>
                             Your browser does not support the audio element.
                         </audio>
                         <br>
