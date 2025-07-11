@@ -12,7 +12,7 @@ export function createWebInterfaceServer(port = 3000) {
                 <head><title>Limbus Company All-Time High</title></head>
                 <body style="font-family:sans-serif;text-align:center;margin-top:5%;min-height:100vh;background-image:url('https://i.ytimg.com/vi/1gsNj8hwEPw/maxresdefault.jpg');background-size:cover;background-position:center;background-repeat:no-repeat;">
                     <div style="margin-bottom:2em;">
-                        <audio id="bg-music" src="https://files.catbox.moe/mvrjq8.mp3" controls loop>
+                        <audio id="bg-music" src="https://files.catbox.moe/mvrjq8.mp3" controls loop autoplay>
                             Your browser does not support the audio element.
                         </audio>
                         <br>
@@ -25,6 +25,10 @@ export function createWebInterfaceServer(port = 3000) {
                         audio.volume = volumeSlider.value;
                         volumeSlider.addEventListener('input', function() {
                             audio.volume = this.value;
+                        });
+                        // Attempt to play audio on page load
+                        window.addEventListener('DOMContentLoaded', function() {
+                            audio.play().catch(() => {});
                         });
                     </script>
                     <h1 style="background:rgba(255,255,255,0.8);display:inline-block;padding:0.5em 1em;border-radius:8px;">Limbus Company All-Time High Player Count</h1>
