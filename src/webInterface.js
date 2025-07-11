@@ -11,8 +11,11 @@ export function createWebInterfaceServer(port = 3000) {
                 <html>
                 <head><title>Limbus Company All-Time High</title></head>
                 <body style="font-family:sans-serif;text-align:center;margin-top:5%;min-height:100vh;background-image:url('https://i.ytimg.com/vi/1gsNj8hwEPw/maxresdefault.jpg');background-size:cover;background-position:center;background-repeat:no-repeat;">
-                    <audio id="bg-music" src="https://www.dropbox.com/scl/fi/ybzuiyo6hruaamkzngdvb/Limbus-Company-In-Hell-We-Live-Lament-Instrumental.mp3?rlkey=mt97okdz4h7ps90im9dz2ix2g&e=1&st=dywj5gnb&dl=1" autoplay loop></audio>
                     <div style="margin-bottom:2em;">
+                        <audio id="bg-music" src="https://www.dropbox.com/scl/fi/ybzuiyo6hruaamkzngdvb/Limbus-Company-In-Hell-We-Live-Lament-Instrumental.mp3?rlkey=mt97okdz4h7ps90im9dz2ix2g&e=1&st=dywj5gnb&dl=1" controls loop>
+                            Your browser does not support the audio element.
+                        </audio>
+                        <br>
                         <label for="volume">Background Music Volume:</label>
                         <input type="range" id="volume" min="0" max="1" step="0.01" value="0.5" style="vertical-align:middle;">
                     </div>
