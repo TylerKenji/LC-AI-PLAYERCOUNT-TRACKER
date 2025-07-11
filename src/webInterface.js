@@ -8,9 +8,9 @@ export function createWebInterfaceServer(port = 3000) {
             const history = getHighHistory();
             res.writeHead(200, { 'Content-Type': 'text/html' });
             res.end(`
-                <html>
+                <html style="height:100%;background-image:url('https://i.ytimg.com/vi/1gsNj8hwEPw/maxresdefault.jpg');background-size:cover;background-position:center;background-repeat:no-repeat;">
                 <head><title>Limbus Company All-Time High</title></head>
-                <body style="font-family:sans-serif;text-align:center;margin-top:5%;background-image:url('https://i.ytimg.com/vi/1gsNj8hwEPw/maxresdefault.jpg');background-size:cover;background-position:center;">
+                <body style="font-family:sans-serif;text-align:center;margin-top:5%;min-height:100vh;background:transparent;">
                     <h1 style="background:rgba(255,255,255,0.8);display:inline-block;padding:0.5em 1em;border-radius:8px;">Limbus Company All-Time High Player Count</h1>
                     <p style="font-size:2em;background:rgba(255,255,255,0.7);display:inline-block;padding:0.5em 1em;border-radius:8px;">${high}</p>
                     <h2 style="background:rgba(255,255,255,0.8);display:inline-block;padding:0.3em 0.8em;border-radius:8px;">Last 5 All-Time Highs</h2>
