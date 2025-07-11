@@ -11,6 +11,19 @@ export function createWebInterfaceServer(port = 3000) {
                 <html>
                 <head><title>Limbus Company All-Time High</title></head>
                 <body style="font-family:sans-serif;text-align:center;margin-top:5%;min-height:100vh;background-image:url('https://i.ytimg.com/vi/1gsNj8hwEPw/maxresdefault.jpg');background-size:cover;background-position:center;background-repeat:no-repeat;">
+                    <audio id="bg-music" src="https://www.dropbox.com/scl/fi/ybzuiyo6hruaamkzngdvb/Limbus-Company-In-Hell-We-Live-Lament-Instrumental.mp3?rlkey=mt97okdz4h7ps90im9dz2ix2g&e=1&st=dywj5gnb&dl=1" autoplay loop></audio>
+                    <div style="margin-bottom:2em;">
+                        <label for="volume">Background Music Volume:</label>
+                        <input type="range" id="volume" min="0" max="1" step="0.01" value="0.5" style="vertical-align:middle;">
+                    </div>
+                    <script>
+                        const audio = document.getElementById('bg-music');
+                        const volumeSlider = document.getElementById('volume');
+                        audio.volume = volumeSlider.value;
+                        volumeSlider.addEventListener('input', function() {
+                            audio.volume = this.value;
+                        });
+                    </script>
                     <h1 style="background:rgba(255,255,255,0.8);display:inline-block;padding:0.5em 1em;border-radius:8px;">Limbus Company All-Time High Player Count</h1>
                     <p style="font-size:2em;background:rgba(255,255,255,0.7);display:inline-block;padding:0.5em 1em;border-radius:8px;">${high}</p>
                     <h2 style="background:rgba(255,255,255,0.8);display:inline-block;padding:0.3em 0.8em;border-radius:8px;">Last 5 All-Time Highs</h2>

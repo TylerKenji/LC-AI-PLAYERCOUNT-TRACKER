@@ -45,6 +45,14 @@ You need to set up your environment variables in the `.env` file. Here are the r
 - `NOTIFICATION_SERVICE`: The service you want to use for notifications (e.g., email, SMS).
 - `THRESHOLD`: The threshold for notifications (optional).
 
+## Known Issues
+
+### Background Image Not Displaying
+
+- **Request:** Add a background image to the web app using the following URL: `https://i.ytimg.com/vi/1gsNj8hwEPw/maxresdefault.jpg`.
+- **Request:** Fix the background so it appears correctly by moving styles to the `<body>` tag.
+- **Note:** Despite these changes, the background image still does not appear on the web app. This may be due to browser security, image hosting restrictions, or other rendering issues. Further investigation is needed.
+
 ## License
 
 This project is licensed under the MIT License. See the LICENSE file for more details.
