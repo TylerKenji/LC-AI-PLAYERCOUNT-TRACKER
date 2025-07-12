@@ -3,14 +3,33 @@ import { getAllTimeHigh, getHighHistory } from './steamApi.js';
 
 export function createWebInterfaceServer(port = 3000) {
     const server = http.createServer((req, res) => {
-        if (req.url === '/' && req.method === 'GET') {
+        // Serve static files from /assets
+        if (req.url.startsWith('/assets/') && req.method === 'GET') {
+            const fs = require('fs');
+            const path = require('path');
+            const filePath = path.join(__dirname, '..', req.url);
+            fs.readFile(filePath, (err, data) => {
+                if (err) {
+                    res.writeHead(404, { 'Content-Type': 'text/plain' });
+                    res.end('Not Found');
+                } else {
+                    // Set correct content type for jpg/png/gif
+                    let contentType = 'application/octet-stream';
+                    if (filePath.endsWith('.jpg') || filePath.endsWith('.jpeg')) contentType = 'image/jpeg';
+                    else if (filePath.endsWith('.png')) contentType = 'image/png';
+                    else if (filePath.endsWith('.gif')) contentType = 'image/gif';
+                    res.writeHead(200, { 'Content-Type': contentType });
+                    res.end(data);
+                }
+            });
+        } else if (req.url === '/' && req.method === 'GET') {
             const high = getAllTimeHigh();
             const history = getHighHistory();
             res.writeHead(200, { 'Content-Type': 'text/html' });
             res.end(`
                 <html>
                 <head><title>Limbus Company All-Time High</title></head>
-                <body style="font-family:sans-serif;text-align:center;margin-top:5%;min-height:100vh;background-image:url('https://i.postimg.cc/sxvscGhm/maxresdefault-2.jpg');background-size:cover;background-position:center;background-repeat:no-repeat;">
+                <body style="font-family:sans-serif;text-align:center;margin-top:5%;min-height:100vh;background-image:url('/assets/maxresdefault-2.jpg');background-size:cover;background-position:center;background-repeat:no-repeat;">
                     <div style="margin-bottom:2em;">
                         <audio id="bg-music" src="https://files.catbox.moe/mvrjq8.mp3" controls loop autoplay>
                             Your browser does not support the audio element.
