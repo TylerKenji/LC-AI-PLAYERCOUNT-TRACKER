@@ -53,6 +53,13 @@ You need to set up your environment variables in the `.env` file. Here are the r
 - **Request:** Fix the background so it appears correctly by moving styles to the `<body>` tag.
 - **Note:** Despite these changes, the background image still does not appear on the web app. This may be due to browser security, image hosting restrictions, or other rendering issues. Further investigation is needed.
 
+### Background Music Not Playing
+
+- **Request:** Add background music to the web app interface using a user-provided audio file and a volume slider.
+- **Request:** Change the background music source to a Catbox-hosted MP3 file and enable autoplay.
+- **Request:** Make the audio automatically play for the user upon entering the web app interface.
+- **Note:** Despite these changes, the background music cannot be heard and the audio slider cannot be seen on the web app. This may be due to browser autoplay restrictions, audio hosting issues, or rendering problems. Further investigation is needed.
+
 ## License
 
 This project is licensed under the MIT License. See the LICENSE file for more details.
