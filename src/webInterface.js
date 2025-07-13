@@ -11,8 +11,6 @@ export function createWebInterfaceServer(port = 3000) {
     console.log('__dirname:', __dirname);
     console.log('HOME:', process.env.HOME || 'Not set');
     console.log('WEBSITE_ROOT_PATH:', process.env.WEBSITE_ROOT_PATH || 'Not set');
-    console.log('Azure WebApp Name:', process.env.AZURE_WEBAPP_NAME || 'Not set');
-    console.log('Azure Resource Group:', process.env.AZURE_RESOURCE_GROUP || 'Not set');
     
     // Try to list contents of assets directory
     try {
@@ -24,8 +22,15 @@ export function createWebInterfaceServer(port = 3000) {
     }
     
     const server = http.createServer((req, res) => {
+        console.log('Received request:', {
+            url: req.url,
+            method: req.method,
+            headers: req.headers
+        });
+        
         // Serve static files from /assets
         if (req.url.startsWith('/assets/') && req.method === 'GET') {
+            // Log the requested URL
             console.log('Received asset request:', req.url);
             
             const possiblePaths = [
@@ -82,7 +87,12 @@ export function createWebInterfaceServer(port = 3000) {
                             else if (currentPath.endsWith('.png')) contentType = 'image/png';
                             else if (currentPath.endsWith('.gif')) contentType = 'image/gif';
                             
-                            res.writeHead(200, { 'Content-Type': contentType });
+                            // Add CORS headers
+                            res.writeHead(200, {
+                                'Content-Type': contentType,
+                                'Access-Control-Allow-Origin': '*',
+                                'Cache-Control': 'public, max-age=31536000'
+                            });
                             res.end(data);
                         }
                     });
@@ -92,13 +102,25 @@ export function createWebInterfaceServer(port = 3000) {
             tryPath(possiblePaths);
             
         } else if (req.url === '/' && req.method === 'GET') {
+            console.log('Serving index page');
             const high = getAllTimeHigh();
             const history = getHighHistory();
-            res.writeHead(200, { 'Content-Type': 'text/html' });
-            res.end(`
+            
+            // Log the data being rendered
+            console.log('Rendering data:', {
+                high,
+                historyLength: history.length
+            });
+            
+            const html = `
+                <!DOCTYPE html>
                 <html>
-                <head><title>Limbus Company All-Time High</title></head>
-                <body style="font-family:sans-serif;text-align:center;margin-top:5%;min-height:100vh;background-image:url('/assets/maxresdefault-2.jpg');background-size:cover;background-position:center;background-repeat:no-repeat;">
+                <head>
+                    <title>Limbus Company All-Time High</title>
+                    <meta charset="utf-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1">
+                </head>
+                <body style="font-family:sans-serif;text-align:center;margin:0;padding:5% 0;min-height:100vh;background-image:url('/assets/maxresdefault-2.jpg');background-size:cover;background-position:center;background-repeat:no-repeat;background-color:#ffffff;">
                     <div style="margin-bottom:2em;">
                         <audio id="bg-music" src="https://files.catbox.moe/mvrjq8.mp3" controls loop autoplay>
                             Your browser does not support the audio element.
@@ -119,20 +141,29 @@ export function createWebInterfaceServer(port = 3000) {
                             audio.play().catch(() => {});
                         });
                     </script>
-                    <h1 style="background:rgba(255,255,255,0.8);display:inline-block;padding:0.5em 1em;border-radius:8px;">Limbus Company All-Time High Player Count</h1>
-                    <p style="font-size:2em;background:rgba(255,255,255,0.7);display:inline-block;padding:0.5em 1em;border-radius:8px;">${high}</p>
-                    <h2 style="background:rgba(255,255,255,0.8);display:inline-block;padding:0.3em 0.8em;border-radius:8px;">Last 5 All-Time Highs</h2>
-                    <ol style="font-size:1.2em;display:inline-block;text-align:left;background:rgba(255,255,255,0.7);padding:1em 2em;border-radius:8px;">
+                    <h1 style="background:rgba(255,255,255,0.8);display:inline-block;padding:0.5em 1em;border-radius:8px;margin:0;">Limbus Company All-Time High Player Count</h1>
+                    <p style="font-size:2em;background:rgba(255,255,255,0.7);display:inline-block;padding:0.5em 1em;border-radius:8px;margin:1em 0;">${high}</p>
+                    <h2 style="background:rgba(255,255,255,0.8);display:inline-block;padding:0.3em 0.8em;border-radius:8px;margin:0;">Last 5 All-Time Highs</h2>
+                    <ol style="font-size:1.2em;display:inline-block;text-align:left;background:rgba(255,255,255,0.7);padding:1em 2em;border-radius:8px;margin:1em 0;">
                         ${history.map(h => `<li>${h.value} <span style='color:#888;font-size:0.8em;'>(${new Date(h.timestamp).toLocaleString()})</span></li>`).join('')}
                     </ol>
                 </body>
                 </html>
-            `);
+            `;
+            
+            res.writeHead(200, {
+                'Content-Type': 'text/html',
+                'Cache-Control': 'no-cache, no-store, must-revalidate'
+            });
+            res.end(html);
+            console.log('Index page served');
         } else {
+            console.log('404 for URL:', req.url);
             res.writeHead(404, { 'Content-Type': 'text/plain' });
             res.end('Not Found');
         }
     });
+    
     server.listen(port, () => {
         console.log(`Web interface running on port ${port}`);
     });
