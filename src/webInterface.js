@@ -1,27 +1,96 @@
 import http from 'http';
 import { getAllTimeHigh, getHighHistory } from './steamApi.js';
+import path from 'path';
+import fs from 'fs';
+import 'dotenv/config';
 
 export function createWebInterfaceServer(port = 3000) {
+    // Log environment information
+    console.log('Environment Information:');
+    console.log('Current working directory:', process.cwd());
+    console.log('__dirname:', __dirname);
+    console.log('HOME:', process.env.HOME || 'Not set');
+    console.log('WEBSITE_ROOT_PATH:', process.env.WEBSITE_ROOT_PATH || 'Not set');
+    console.log('Azure WebApp Name:', process.env.AZURE_WEBAPP_NAME || 'Not set');
+    console.log('Azure Resource Group:', process.env.AZURE_RESOURCE_GROUP || 'Not set');
+    
+    // Try to list contents of assets directory
+    try {
+        const assetsDir = path.join(__dirname, '..', 'assets');
+        const files = fs.readdirSync(assetsDir);
+        console.log('Assets directory contents:', files);
+    } catch (err) {
+        console.log('Error listing assets directory:', err.message);
+    }
+    
     const server = http.createServer((req, res) => {
         // Serve static files from /assets
         if (req.url.startsWith('/assets/') && req.method === 'GET') {
-            const fs = require('fs');
-            const path = require('path');
-            const filePath = path.join(__dirname, '..', req.url);
-            fs.readFile(filePath, (err, data) => {
-                if (err) {
+            console.log('Received asset request:', req.url);
+            
+            const possiblePaths = [
+                path.join(__dirname, '..', 'assets', path.basename(req.url)),
+                path.join(process.cwd(), 'assets', path.basename(req.url)),
+                path.join(process.cwd(), 'steam-limbus-ai-notifier', 'assets', path.basename(req.url)),
+                path.join(process.env.HOME || '', 'site', 'wwwroot', 'assets', path.basename(req.url)),
+                path.join(process.env.WEBSITE_ROOT_PATH || '', 'assets', path.basename(req.url))
+            ];
+            
+            console.log('Checking these paths:');
+            possiblePaths.forEach(p => console.log('- ', p));
+            
+            const tryPath = (paths) => {
+                if (paths.length === 0) {
+                    console.error('File not found in any location');
                     res.writeHead(404, { 'Content-Type': 'text/plain' });
                     res.end('Not Found');
-                } else {
-                    // Set correct content type for jpg/png/gif
-                    let contentType = 'application/octet-stream';
-                    if (filePath.endsWith('.jpg') || filePath.endsWith('.jpeg')) contentType = 'image/jpeg';
-                    else if (filePath.endsWith('.png')) contentType = 'image/png';
-                    else if (filePath.endsWith('.gif')) contentType = 'image/gif';
-                    res.writeHead(200, { 'Content-Type': contentType });
-                    res.end(data);
+                    return;
                 }
-            });
+                
+                const currentPath = paths[0];
+                console.log('Checking path:', currentPath);
+                
+                fs.stat(currentPath, (statErr, stats) => {
+                    if (statErr) {
+                        console.log('File not found at:', currentPath);
+                        console.log('Error:', statErr.message);
+                        tryPath(paths.slice(1));
+                        return;
+                    }
+                    
+                    console.log('File exists at:', currentPath);
+                    console.log('File stats:', {
+                        size: stats.size,
+                        isFile: stats.isFile(),
+                        permissions: stats.mode,
+                        created: stats.birthtime,
+                        modified: stats.mtime
+                    });
+                    
+                    fs.readFile(currentPath, (err, data) => {
+                        if (err) {
+                            console.log('Error reading file:', err.message);
+                            tryPath(paths.slice(1));
+                        } else {
+                            console.log('Successfully read file:', {
+                                path: currentPath,
+                                size: data.length
+                            });
+                            
+                            let contentType = 'application/octet-stream';
+                            if (currentPath.endsWith('.jpg') || currentPath.endsWith('.jpeg')) contentType = 'image/jpeg';
+                            else if (currentPath.endsWith('.png')) contentType = 'image/png';
+                            else if (currentPath.endsWith('.gif')) contentType = 'image/gif';
+                            
+                            res.writeHead(200, { 'Content-Type': contentType });
+                            res.end(data);
+                        }
+                    });
+                });
+            };
+            
+            tryPath(possiblePaths);
+            
         } else if (req.url === '/' && req.method === 'GET') {
             const high = getAllTimeHigh();
             const history = getHighHistory();
