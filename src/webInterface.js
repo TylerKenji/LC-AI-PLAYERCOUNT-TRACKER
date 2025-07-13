@@ -111,6 +111,31 @@ export function createWebInterfaceServer(port = 3000) {
                 high,
                 historyLength: history.length
             });
+
+            console.log('Current directory structure:');
+            try {
+                const listDir = (dir) => {
+                    const items = fs.readdirSync(dir);
+                    console.log(`Contents of ${dir}:`, items);
+                    items.forEach(item => {
+                        const fullPath = path.join(dir, item);
+                        if (fs.statSync(fullPath).isDirectory()) {
+                            listDir(fullPath);
+                        }
+                    });
+                };
+                listDir(process.cwd());
+            } catch (err) {
+                console.log('Error listing directory:', err);
+            }
+
+            // Test direct file access
+            try {
+                const imageStats = fs.statSync(path.join(process.cwd(), 'assets', 'maxresdefault-2.jpg'));
+                console.log('Image file stats:', imageStats);
+            } catch (err) {
+                console.log('Error accessing image file:', err);
+            }
             
             const html = `
                 <!DOCTYPE html>
@@ -120,7 +145,7 @@ export function createWebInterfaceServer(port = 3000) {
                     <meta charset="utf-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1">
                 </head>
-                <body style="font-family:sans-serif;text-align:center;margin:0;padding:5% 0;min-height:100vh;background-image:url('/assets/maxresdefault-2.jpg');background-size:cover;background-position:center;background-repeat:no-repeat;background-color:#ffffff;">
+                <body style="font-family:sans-serif;text-align:center;margin:0;padding:5% 0;min-height:100vh;background-image:url('https://lcaiplayercounttracker-c9gge8gaecefasg8.westus-01.azurewebsites.net/assets/maxresdefault-2.jpg');background-size:cover;background-position:center;background-repeat:no-repeat;background-color:#ffffff;">
                     <div style="margin-bottom:2em;">
                         <audio id="bg-music" src="https://files.catbox.moe/mvrjq8.mp3" controls loop autoplay>
                             Your browser does not support the audio element.
@@ -151,12 +176,24 @@ export function createWebInterfaceServer(port = 3000) {
                 </html>
             `;
             
+            console.log('Generated HTML preview (first 500 chars):', html.substring(0, 500));
+            
             res.writeHead(200, {
                 'Content-Type': 'text/html',
                 'Cache-Control': 'no-cache, no-store, must-revalidate'
             });
             res.end(html);
             console.log('Index page served');
+            
+            // Test image request immediately
+            const testImagePath = path.join(process.cwd(), 'assets', 'maxresdefault-2.jpg');
+            fs.readFile(testImagePath, (err, data) => {
+                if (err) {
+                    console.log('Error reading image file after serving page:', err);
+                } else {
+                    console.log('Successfully read image file after serving page, size:', data.length);
+                }
+            });
         } else {
             console.log('404 for URL:', req.url);
             res.writeHead(404, { 'Content-Type': 'text/plain' });
