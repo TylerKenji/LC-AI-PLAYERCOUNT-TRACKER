@@ -51,7 +51,8 @@ You need to set up your environment variables in the `.env` file. Here are the r
 
 - **Request:** Add a background image to the web app using the following URL: `https://i.postimg.cc/sxvscGhm/maxresdefault-2.jpg`.
 - **Request:** Fix the background so it appears correctly by moving styles to the `<body>` tag.
-- **Note:** Despite these changes, the background image still does not appear on the web app. This may be due to browser security, image hosting restrictions, or other rendering issues. Further investigation is needed.
+- **Request:** Change the background image to use a local file (`/assets/maxresdefault-2.jpg`) instead of a URL-hosted one, and update the server to serve static assets.
+- **Note:** Despite these changes, the background image still does not appear on the web app. This may be due to browser security, Azure configuration, or other rendering issues. Further investigation is needed.
 
 ### Background Music Not Playing
 
