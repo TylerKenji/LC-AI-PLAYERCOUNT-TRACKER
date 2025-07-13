@@ -85,4 +85,4 @@ jobs:
           app-name: 'LCAIPlayerCountTracker'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_11A30028A2E641FDB041A1C4C28514CB }}
