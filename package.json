@@ -5,10 +5,14 @@
   "main": "src/index.js",
   "type": "module",
   "scripts": {
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "test": "echo \"No tests specified yet\" && exit 0",
+    "setup": "npm install && echo \"Please copy .env.example to .env and configure your Steam API key\"",
+    "check-deps": "npm audit"
   },
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "^1.10.0",
     "dotenv": "^10.0.0"
   },
   "author": "Your Name",
