@@ -2,7 +2,7 @@ import dotenv from 'dotenv';
 import AIAgent from './aiAgent.js';
 import notifier from './notifier.js';
 import config from './config/index.js';
-import { loadAllTimeHigh, getAllTimeHigh, getHighHistory } from './steamApi.js';
+import { loadAllTimeHigh } from './steamApi.js';
 import { createWebInterfaceServer } from './webInterface.js';
 
 dotenv.config();
@@ -28,5 +28,5 @@ const aiAgent = new AIAgent(config.steamApiKey, notifier, trace);
 trace('AIAgent initialized. Starting monitoring...');
 aiAgent.startMonitoring(config.checkInterval);
 
-// Use the rich web interface server instead of basic HTTP server
-const server = createWebInterfaceServer(PORT);
+// Start the web interface server (which handles static assets)
+createWebInterfaceServer(PORT);

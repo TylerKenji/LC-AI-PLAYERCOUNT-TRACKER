@@ -2,10 +2,10 @@ import http from 'http';
 import { getAllTimeHigh, getHighHistory } from './steamApi.js';
 import path from 'path';
 import fs from 'fs';
-import 'dotenv/config';
 import { fileURLToPath } from 'url';
+import 'dotenv/config';
 
-// ES module equivalent of __dirname
+// Get __dirname equivalent for ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 

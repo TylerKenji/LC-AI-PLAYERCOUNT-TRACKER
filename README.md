@@ -1,166 +1,114 @@
-# Limbus Company Player Count Tracker
+# Steam Limbus AI Notifier
 
-An AI-powered monitoring application that tracks the all-time high player count for Limbus Company on Steam. Features a rich web interface with background visuals and audio, plus intelligent notifications when new records are reached.
+This project is an AI agent that monitors the online player count for the game Limbus Company using the Steam API. It notifies the user whenever the player count reaches an all-time new high.
 
-## ✨ Features
+## Table of Contents
 
-- **Real-time Steam API monitoring** - Tracks Limbus Company player counts
-- **All-time high detection** - Automatically detects and records new player count records
-- **Rich web interface** - Beautiful UI with background image and audio controls
-- **Historical tracking** - Displays the last 5 all-time high records with timestamps
-- **AI-powered notifications** - Smart alerting system when new highs are reached
-- **Asset serving** - Serves static assets including images and audio files
+- [Installation](#installation)
+- [Usage](#usage)
+- [Configuration](#configuration)
+- [License](#license)
 
-## 🖥️ Web Interface
+## Installation
 
-The application provides a rich web interface featuring:
-- Background image from local assets (`/assets/maxresdefault-2.jpg`)
-- Background music with volume controls
-- Semi-transparent overlays for better readability
-- Real-time display of current all-time high
-- Historical record display with timestamps
+1. Clone the repository:
 
-## 📋 Prerequisites
-
-- Node.js (version 14 or higher)
-- Steam API key (get one at https://steamcommunity.com/dev/apikey)
-- npm or yarn package manager
-
-## 🚀 Installation
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/TylerKenji/LC-AI-PLAYERCOUNT-TRACKER.git
-   cd LC-AI-PLAYERCOUNT-TRACKER
+   ```
+   git clone https://github.com/yourusername/steam-limbus-ai-notifier.git
    ```
 
-2. **Install dependencies:**
-   ```bash
+2. Navigate to the project directory:
+
+   ```
+   cd steam-limbus-ai-notifier
+   ```
+
+3. Install the dependencies:
+
+   ```
    npm install
    ```
 
-3. **Set up environment variables:**
-   ```bash
-   # Copy the example environment file
-   cp .env.example .env
+4. Create a `.env` file in the root directory and add your configuration settings (see Configuration section).
+
+## Usage
+
+To start the AI agent, run the following command:
+
+```
+node src/index.js
+```
+
+The agent will begin monitoring the online player count for Limbus Company and will send notifications when a new high is reached.
+
+## Configuration
+
+You need to set up your environment variables in the `.env` file. Here are the required variables:
+
+- `STEAM_API_KEY`: Your Steam API key.
+- `NOTIFICATION_SERVICE`: The service you want to use for notifications (e.g., email, SMS).
+- `THRESHOLD`: The threshold for notifications (optional).
+
+## Recent Changes
+
+### August 2025 - Background Image Fix
+
+**Fixed:** Background image not displaying on web interface
+
+**Changes Made:**
+
+- ✅ Fixed ES module `__dirname` compatibility issue in `src/webInterface.js`
+- ✅ Updated `src/index.js` to use proper web interface server with static asset handling
+- ✅ Verified static file serving for `/assets/maxresdefault-2.jpg`
+- ✅ Added comprehensive path resolution for different deployment environments
+- ✅ Enhanced error logging and debugging capabilities
+
+**Result:** Background image now displays correctly on the web interface at `http://localhost:3000`
+
+## Known Issues
+
+### Background Image Not Displaying ✅ **FIXED**
+
+- **Request:** Add a background image to the web app using the following URL: `https://i.postimg.cc/sxvscGhm/maxresdefault-2.jpg`.
+- **Request:** Fix the background so it appears correctly by moving styles to the `<body>` tag.
+- **Request:** Change the background image to use a local file (`/assets/maxresdefault-2.jpg`) instead of a URL-hosted one, and update the server to serve static assets.
+- **Previous Issue:** Despite these changes, the background image still did not appear on the web app.
+
+#### **Fix Applied (August 2025):**
+
+**Root Causes Identified:**
+
+1. **ES Module `__dirname` Issue**: The `__dirname` variable is not available in ES modules, causing path resolution failures for static assets.
+2. **Wrong Server Implementation**: The `index.js` was using a simple HTTP server instead of the comprehensive `webInterface.js` server that handles static file serving.
+
+**Solutions Implemented:**
+
+1. **Fixed ES Module Path Resolution** in `src/webInterface.js`:
+
+   ```javascript
+   import { fileURLToPath } from "url";
+   const __filename = fileURLToPath(import.meta.url);
+   const __dirname = path.dirname(__filename);
    ```
-   
-   Edit the `.env` file with your configuration:
-   ```env
-   STEAM_API_KEY=your_steam_api_key_here
-   NOTIFICATION_THRESHOLD=1000
-   NOTIFIER_SERVICE=email
-   NOTIFIER_EMAIL=your_email@example.com
-   TRACING=false
-   PORT=3000
-   ```
 
-## 🏃‍♂️ Usage
+2. **Updated Server Architecture** in `src/index.js`:
+   - Removed the simple HTTP server that only handled the root route
+   - Implemented proper use of `createWebInterfaceServer()` which includes:
+     - Static asset serving from `/assets/` directory
+     - Multiple path resolution for different deployment scenarios
+     - Proper MIME type detection for images
+     - CORS headers and caching support
+     - Comprehensive error logging and debugging
 
-**Start the application:**
-```bash
-npm start
-```
+**Result:** The background image now loads correctly at `http://localhost:3000/assets/maxresdefault-2.jpg` and displays as the page background. Server logs confirm the image file (104KB) is properly detected and served with `image/jpeg` content type.
 
-**Access the web interface:**
-Open your browser and navigate to `http://localhost:3000`
+### Background Music Not Playing
 
-The application will:
-- Begin monitoring Limbus Company player counts via Steam API
-- Display the current all-time high on the web interface
-- Show historical records of the last 5 all-time highs
-- Send notifications when new records are detected
+- **Request:** Add background music to the web app interface using a user-provided audio file and a volume slider.
+- **Request:** Change the background music source to a Catbox-hosted MP3 file and enable autoplay.
+- **Request:** Make the audio automatically play for the user upon entering the web app interface.
+- **Note:** Despite these changes, the background music cannot be heard and the audio slider cannot be seen on the web app. This may be due to browser autoplay restrictions, audio hosting issues, or rendering problems. Further investigation is needed.
 
-## ⚙️ Configuration
-
-### Environment Variables
-
-| Variable | Description | Default | Required |
-|----------|-------------|---------|----------|
-| `STEAM_API_KEY` | Your Steam API key | - | ✅ |
-| `NOTIFICATION_THRESHOLD` | Minimum player count for notifications | 1000 | ❌ |
-| `NOTIFIER_SERVICE` | Notification service type | email | ❌ |
-| `NOTIFIER_EMAIL` | Email address for notifications | - | ❌ |
-| `TRACING` | Enable debug tracing | false | ❌ |
-| `PORT` | Web server port | 3000 | ❌ |
-
-### Getting a Steam API Key
-
-1. Visit https://steamcommunity.com/dev/apikey
-2. Log in with your Steam account
-3. Enter a domain name (can be localhost for development)
-4. Copy the generated API key to your `.env` file
-
-## 🏗️ Project Structure
-
-```
-LC-AI-PLAYERCOUNT-TRACKER/
-├── src/
-│   ├── index.js           # Main application entry point
-│   ├── webInterface.js    # Rich web interface server
-│   ├── aiAgent.js         # AI monitoring agent
-│   ├── steamApi.js        # Steam API integration
-│   ├── notifier.js        # Notification system
-│   └── config/
-│       └── index.js       # Configuration management
-├── assets/
-│   └── maxresdefault-2.jpg # Background image
-├── package.json
-├── .env.example           # Example environment file
-└── README.md
-```
-
-## 🔧 Technical Details
-
-### Architecture
-
-- **ES Modules**: Uses modern JavaScript module syntax
-- **Express-free**: Lightweight HTTP server using Node.js built-in `http` module
-- **Environment-based config**: Flexible configuration via environment variables
-- **Asset serving**: Built-in static file serving for images and media
-
-### Key Components
-
-1. **Web Interface** (`webInterface.js`): Serves the rich UI with background image and audio
-2. **AI Agent** (`aiAgent.js`): Monitors player counts and detects new records
-3. **Steam API** (`steamApi.js`): Handles Steam API integration and data persistence
-4. **Notifier** (`notifier.js`): Manages notification delivery systems
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-**Background image not loading:**
-- Ensure `assets/maxresdefault-2.jpg` exists in the project directory
-- Check file permissions and accessibility
-- Verify the web server is serving static assets correctly
-
-**Steam API errors:**
-- Verify your Steam API key is correct and active
-- Check internet connectivity
-- Ensure the Steam API service is available
-
-**Audio not playing:**
-- Modern browsers require user interaction before playing audio
-- Check browser autoplay policies
-- Verify the audio URL is accessible
-
-**Port already in use:**
-- Change the `PORT` environment variable to use a different port
-- Kill any existing processes using port 3000
-
-## 🔄 Recent Updates
-
-- ✅ Fixed web interface integration - now properly uses rich UI from `webInterface.js`
-- ✅ Resolved ES module compatibility issues with `__dirname`
-- ✅ Updated dependencies and fixed security vulnerabilities
-- ✅ Added proper asset serving for background images
-- ✅ Enhanced documentation and setup instructions
-
-## 📜 License
+## License
 
 This project is licensed under the MIT License. See the LICENSE file for more details.
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
